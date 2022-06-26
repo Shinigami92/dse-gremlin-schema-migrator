@@ -8,7 +8,7 @@ import picocli.CommandLine.Parameters
 @Command(name = "migration", mixinStandardHelpOptions = true)
 class MigrationCommand : Runnable {
 
-    @Parameters(paramLabel = "<host>", defaultValue = "my-dse", description = ["Host/IP"])
+    @Parameters(paramLabel = "<host>", defaultValue = "172.17.0.2", description = ["Host/IP"])
     var host: String? = null
 
     @Parameters(paramLabel = "<port>", defaultValue = "9042", description = ["Port"])
