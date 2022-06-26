@@ -7,22 +7,30 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup JDK
+      - name: Set up java 17
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
           cache: gradle
 
-      - name: Build
-        run: ./gradlew quarkusBuild
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: build
 
-      - name: Test
-        run: ./gradlew quarkusTest
+      - name: Test with Gradle
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: test
