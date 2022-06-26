@@ -23,6 +23,7 @@ dependencies {
     implementation("org.apache.tinkerpop:tinkergraph-gremlin:3.6.0")
     implementation("org.apache.tinkerpop:gremlin-driver:3.6.0")
     testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("org.testcontainers:testcontainers:1.17.2")
 }
 
 group = "de.shinigami92"

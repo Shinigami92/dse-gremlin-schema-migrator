@@ -14,16 +14,16 @@ class MigrationService {
             localDatacenter: String,
             graphName: String,
     ): Unit {
-        System.out.println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName")
+        println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName")
 
-        System.out.println("Connecting to $host:$port")
+        println("Connecting to $host:$port")
         val session =
                 CqlSession.builder()
                         .addContactPoint(InetSocketAddress(host, port))
                         .withLocalDatacenter(localDatacenter)
                         .build()
 
-        System.out.println("Connected to $host:$port")
+        println("Connected to $host:$port")
 
         session.execute(
                 ScriptGraphStatement.builder("system.graph(graphName).ifNotExists().create()")
@@ -31,6 +31,6 @@ class MigrationService {
                         .setSystemQuery(true)
                         .build()
         )
-        System.out.println("Graph $graphName created")
+        println("Graph $graphName created")
     }
 }
