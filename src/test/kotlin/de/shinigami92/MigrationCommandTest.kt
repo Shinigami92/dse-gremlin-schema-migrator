@@ -9,8 +9,8 @@ class MigrationCommandTest {
     @Test
     @Launch()
     fun testDefaultArguments(result: LaunchResult) {
-        val expected = "Host my-dse, Port 9042, DC dc1, Graph name my_graph\n"
-        val actual = result.output
-        Assertions.assertTrue(actual.contains(expected))
+        val message = "Host my-dse, Port 9042, DC dc1, Graph name my_graph"
+        val output = result.output
+        Assertions.assertTrue(output.contains(message))
     }
 }
