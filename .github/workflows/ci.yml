@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,14 +23,5 @@ jobs:
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
         with:
-          arguments: build
-
-      - name: Test with Gradle
-        uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
-        with:
-          arguments: test
+          arguments: --info
