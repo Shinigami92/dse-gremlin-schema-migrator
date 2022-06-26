@@ -19,6 +19,9 @@ dependencies {
     implementation("io.quarkus:quarkus-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.quarkus:quarkus-arc")
+    implementation("com.datastax.oss.quarkus:cassandra-quarkus-client:1.1.2")
+    implementation("org.apache.tinkerpop:tinkergraph-gremlin:3.6.0")
+    implementation("org.apache.tinkerpop:gremlin-driver:3.6.0")
     testImplementation("io.quarkus:quarkus-junit5")
 }
 
@@ -31,9 +34,9 @@ java {
 }
 
 allOpen {
-    annotation("javax.ws.rs.Path")
     annotation("javax.enterprise.context.ApplicationScoped")
     annotation("io.quarkus.test.junit.QuarkusTest")
+    annotation("io.quarkus.test.junit.QuarkusMainIntegrationTest")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
