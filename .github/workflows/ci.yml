@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,9 +21,12 @@ jobs:
           java-version: 17
           cache: gradle
 
-      - name: Build with Gradle
+      - name: Build
         uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
         with:
-          arguments: clean build test --info
+          arguments: clean assemble
+
+      - name: Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: check
