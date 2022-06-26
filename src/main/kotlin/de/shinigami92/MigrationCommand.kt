@@ -1,5 +1,7 @@
 package de.shinigami92
 
+import javax.enterprise.inject.Default
+import javax.inject.Inject
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 
@@ -22,13 +24,9 @@ class MigrationCommand : Runnable {
     )
     var graphName: String? = null
 
-    override fun run() {
-        System.out.printf(
-                "Host %s, Port %d, DC %s, Graph name %s\n",
-                host,
-                port,
-                localDatacenter,
-                graphName
-        )
+    @Inject @field:Default lateinit var service: MigrationService
+
+    override fun run(): Unit {
+        service.runMigration(host!!, port!!, localDatacenter!!, graphName!!)
     }
 }
