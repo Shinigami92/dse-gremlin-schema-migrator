@@ -44,9 +44,9 @@ open class MigrationCommandTest {
         @AfterAll
         @JvmStatic
         internal fun afterAll() {
-            println("Stopping DSE container")
+            // println("Stopping DSE container")
 
-            container.stop()
+            // container.stop()
         }
     }
 
