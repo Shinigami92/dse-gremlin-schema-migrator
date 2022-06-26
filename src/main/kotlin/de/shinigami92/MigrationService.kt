@@ -25,12 +25,17 @@ class MigrationService {
 
         println("Connected to $host:$port")
 
+        ensureSystemGraph(session, graphName)
+    }
+
+    fun ensureSystemGraph(session: CqlSession, graphName: String): Unit {
         session.execute(
                 ScriptGraphStatement.builder("system.graph(graphName).ifNotExists().create()")
                         .setQueryParam("graphName", graphName)
                         .setSystemQuery(true)
                         .build()
         )
+
         println("Graph $graphName created")
     }
 }
