@@ -22,4 +22,7 @@ jobs:
           cache: gradle
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew quarkusBuild
+
+      - name: Test
+        run: ./gradlew quarkusTest
