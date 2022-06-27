@@ -27,7 +27,7 @@ open class MigrationCommandTest {
             container =
                     GenericContainer(DockerImageName.parse("datastax/dse-server:6.8.24"))
                             .withCommand("-s -g")
-                            .withStartupTimeout(Duration.ofMinutes(3))
+                            .withStartupTimeout(Duration.ofMinutes(5))
                             .withEnv("DS_LICENSE", "accept")
                             .withExposedPorts(9042)
 
