@@ -58,7 +58,6 @@ class MigrationCommandTest {
     fun testDefaultArguments(launcher: QuarkusMainLauncher) {
         val result: LaunchResult = launcher.launch("--host=$host", "--port=$port")
 
-        assertThat(result.output).contains("Host $host, Port $port, DC dc1, Graph name my_graph")
         assertThat(result.errorOutput).contains("Missing required parameter: 'MIGRATION_DIRECTORY'")
     }
 
