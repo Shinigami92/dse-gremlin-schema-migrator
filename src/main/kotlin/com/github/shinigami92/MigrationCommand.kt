@@ -24,10 +24,22 @@ class MigrationCommand : Runnable {
     )
     var graphName: String? = null
 
+    @Parameters(
+        paramLabel = "<migration-folder>",
+        description = ["Migration folder"]
+    )
+    var migrationFolder: String? = null
+
     @Inject @field:Default
     lateinit var service: MigrationService
 
     override fun run() {
-        service.run(host!!, port!!, localDatacenter!!, graphName!!)
+        service.run(
+            host!!,
+            port!!,
+            localDatacenter!!,
+            graphName!!,
+            migrationFolder
+        )
     }
 }

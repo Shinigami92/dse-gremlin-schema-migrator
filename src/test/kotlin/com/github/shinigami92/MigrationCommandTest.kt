@@ -54,8 +54,21 @@ open class MigrationCommandTest {
     fun testDefaultArguments(launcher: QuarkusMainLauncher) {
         val result: LaunchResult = launcher.launch(host, port)
 
-        val message = "Host $host, Port $port, DC dc1, Graph name my_graph"
+        val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph"
+        val message2 = "No migration folder specified"
         val output = result.output
-        Assertions.assertTrue(output.contains(message))
+        Assertions.assertTrue(output.contains(message1))
+        Assertions.assertTrue(output.contains(message2))
+    }
+
+    @Test
+    fun testProvideMigrationFolder(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch(host, port, "dc1", "my_graph", "src/test/resources/migrations")
+
+        val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph"
+        val message2 = "Found 2 migration files"
+        val output = result.output
+        Assertions.assertTrue(output.contains(message1))
+        Assertions.assertTrue(output.contains(message2))
     }
 }
