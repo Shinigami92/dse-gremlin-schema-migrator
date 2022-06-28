@@ -40,7 +40,7 @@ jobs:
       - if: steps.image-cache.outputs.cache-hit != 'true'
         run: |
           docker pull datastax/dse-server:6.8.24
-          docker save -o ~/image-cache/datastax_dse-server.tar
+          docker save -o ~/image-cache/datastax_dse-server.tar datastax/dse-server:6.8.24
       - if: steps.image-cache.outputs.cache-hit == 'true'
         run: docker load -i ~/image-cache/datastax_dse-server.tar
 
