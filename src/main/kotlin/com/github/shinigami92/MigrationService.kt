@@ -20,18 +20,13 @@ import javax.enterprise.context.ApplicationScoped
 class MigrationService {
 
     fun run(
+        migrationFolder: File,
         host: String,
         port: Int,
         localDatacenter: String,
-        graphName: String,
-        migrationFolder: String?
+        graphName: String
     ) {
         println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName, Migration folder $migrationFolder")
-
-        if (migrationFolder.isNullOrBlank()) {
-            println("No migration folder specified")
-            return
-        }
 
         println("Connecting to $host:$port")
         val session = CqlSession.builder()
@@ -43,11 +38,9 @@ class MigrationService {
 
         ensureSystemGraph(session, graphName)
 
-        val folder = File(migrationFolder)
-
         createVertexMigration(session, graphName)
 
-        val migrationFiles = getMigrationFiles(folder)
+        val migrationFiles = getMigrationFiles(migrationFolder)
 
         println("Found ${migrationFiles.size} migration files")
 

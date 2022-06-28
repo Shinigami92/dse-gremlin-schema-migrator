@@ -1,46 +1,62 @@
 package com.github.shinigami92
 
 import picocli.CommandLine.Command
+import picocli.CommandLine.Option
 import picocli.CommandLine.Parameters
+import java.io.File
 import javax.enterprise.inject.Default
 import javax.inject.Inject
 
-@Command(name = "migration", mixinStandardHelpOptions = true)
+@Command(
+    name = "migration",
+    description = ["Migrate schema for specified database"],
+    mixinStandardHelpOptions = true,
+    showDefaultValues = true,
+    sortOptions = false
+)
 class MigrationCommand : Runnable {
 
-    @Parameters(paramLabel = "<host>", defaultValue = "172.17.0.2", description = ["Host/IP"])
-    var host: String? = null
-
-    @Parameters(paramLabel = "<port>", defaultValue = "9042", description = ["Port"])
-    var port: Int? = null
-
-    @Parameters(paramLabel = "<local-datacenter>", defaultValue = "dc1", description = ["DC"])
-    var localDatacenter: String? = null
-
     @Parameters(
-        paramLabel = "<graph-name>",
-        defaultValue = "my_graph",
-        description = ["Graph name"]
-    )
-    var graphName: String? = null
-
-    @Parameters(
-        paramLabel = "<migration-folder>",
-        defaultValue = "",
+        index = "0",
+        paramLabel = "<migration folder>",
         description = ["Migration folder"]
     )
-    var migrationFolder: String? = null
+    private lateinit var migrationFolder: File
+
+    @Option(
+        names = ["-H", "--host"],
+        description = ["Host/IP"]
+    )
+    private var host: String = "172.17.0.2"
+
+    @Option(
+        names = ["-P", "--port"],
+        description = ["Port"]
+    )
+    private var port: Int = 9042
+
+    @Option(
+        names = ["-D", "--dc", "--local-datacenter"],
+        description = ["DC"]
+    )
+    private var localDatacenter: String = "dc1"
+
+    @Option(
+        names = ["-G", "--graph-name"],
+        description = ["Graph name"]
+    )
+    private var graphName: String = "my_graph"
 
     @Inject @field:Default
-    lateinit var service: MigrationService
+    internal lateinit var service: MigrationService
 
     override fun run() {
         service.run(
-            host!!,
-            port!!,
-            localDatacenter!!,
-            graphName!!,
-            migrationFolder
+            migrationFolder,
+            host,
+            port,
+            localDatacenter,
+            graphName
         )
     }
 }
