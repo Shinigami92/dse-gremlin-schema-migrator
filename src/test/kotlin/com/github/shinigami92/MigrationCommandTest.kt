@@ -8,11 +8,14 @@ import io.quarkus.test.junit.main.QuarkusMainTest
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS.MAC
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 import java.time.Duration
 
 @QuarkusMainTest
+@DisabledOnOs(MAC)
 class MigrationCommandTest {
     companion object {
         lateinit var container: GenericContainer<*>
@@ -53,23 +56,17 @@ class MigrationCommandTest {
 
     @Test
     fun testDefaultArguments(launcher: QuarkusMainLauncher) {
-        val result: LaunchResult = launcher.launch(host, port)
+        val result: LaunchResult = launcher.launch("--host=$host", "--port=$port")
 
-        val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph"
-        val message2 = "No migration folder specified"
-        val output = result.output
-        assertThat(output).contains(message1)
-        assertThat(output).contains(message2)
+        assertThat(result.output).contains("Host $host, Port $port, DC dc1, Graph name my_graph")
+        assertThat(result.errorOutput).contains("Missing required parameter: 'MIGRATION_DIRECTORY'")
     }
 
     @Test
-    fun testProvideMigrationFolder(launcher: QuarkusMainLauncher) {
-        val result: LaunchResult = launcher.launch(host, port, "dc1", "my_graph", "src/test/resources/migrations")
+    fun testProvideMigrationDirectory(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("--host=$host", "--port=$port", "-D=dc1", "-G=my_graph", "src/test/resources/migrations")
 
-        val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph, Migration folder src/test/resources/migrations"
-        val message2 = "Found 2 migration files"
-        val output = result.output
-        assertThat(output).contains(message1)
-        assertThat(output).contains(message2)
+        assertThat(result.output).contains("Host $host, Port $port, DC dc1, Graph name my_graph, Migration directory src/test/resources/migrations")
+        assertThat(result.output).contains("Found 2 migration files")
     }
 }

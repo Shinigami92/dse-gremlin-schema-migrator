@@ -18,21 +18,21 @@ class MigrationCommandNoContainerTest {
         assertThat(result.exitCode()).isEqualTo(0)
         assertThat(result.output).contains(
             """Usage: migration [-hV] [-D=<localDatacenter>] [-G=<graphName>] [-H=<host>]
-                 [-P=<port>] <migration folder>
+                 [-P=<port>] MIGRATION_DIRECTORY
 Migrate schema for specified database
-      <migration folder>   Migration folder
-  -H, --host=<host>        Host/IP
-                             Default: 172.17.0.2
-  -P, --port=<port>        Port
-                             Default: 9042
+      MIGRATION_DIRECTORY   Migration directory
+  -H, --host=<host>         Host/IP
+                              Default: 172.17.0.2
+  -P, --port=<port>         Port
+                              Default: 9042
   -D, --dc, --local-datacenter=<localDatacenter>
-                           DC
-                             Default: dc1
+                            DC
+                              Default: dc1
   -G, --graph-name=<graphName>
-                           Graph name
-                             Default: my_graph
-  -h, --help               Show this help message and exit.
-  -V, --version            Print version information and exit."""
+                            Graph name
+                              Default: my_graph
+  -h, --help                Show this help message and exit.
+  -V, --version             Print version information and exit."""
         )
     }
 
@@ -49,6 +49,30 @@ Migrate schema for specified database
         val result: LaunchResult = launcher.launch()
 
         assertThat(result.exitCode()).isEqualTo(2)
-        assertThat(result.errorOutput).contains("Missing required parameter: '<migration folder>'")
+        assertThat(result.errorOutput).contains("Missing required parameter: 'MIGRATION_DIRECTORY'")
+    }
+
+    @Test
+    fun `migration unknown`(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("unknown")
+
+        assertThat(result.exitCode()).isEqualTo(1)
+        assertThat(result.errorOutput).contains("IllegalArgumentException: Migration directory unknown does not exist")
+    }
+
+    @Test
+    fun `migration 001_schema_vertex_person`(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("src/test/resources/migrations/001_schema_vertex_person.groovy")
+
+        assertThat(result.exitCode()).isEqualTo(1)
+        assertThat(result.errorOutput).contains("IllegalArgumentException: Migration directory src/test/resources/migrations/001_schema_vertex_person.groovy is not a directory")
+    }
+
+    @Test
+    fun `migration dir`(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("src/test/resources/migrations")
+
+        assertThat(result.exitCode()).isEqualTo(1)
+        assertThat(result.errorOutput).contains("Could not reach any contact point, make sure you've provided valid addresses")
     }
 }

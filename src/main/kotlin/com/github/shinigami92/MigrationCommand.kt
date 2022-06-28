@@ -18,10 +18,10 @@ class MigrationCommand : Runnable {
 
     @Parameters(
         index = "0",
-        paramLabel = "<migration folder>",
-        description = ["Migration folder"]
+        paramLabel = "MIGRATION_DIRECTORY",
+        description = ["Migration directory"]
     )
-    private lateinit var migrationFolder: File
+    private lateinit var migrationDirectory: File
 
     @Option(
         names = ["-H", "--host"],
@@ -52,7 +52,7 @@ class MigrationCommand : Runnable {
 
     override fun run() {
         service.run(
-            migrationFolder,
+            migrationDirectory,
             host,
             port,
             localDatacenter,

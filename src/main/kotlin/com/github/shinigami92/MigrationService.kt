@@ -11,6 +11,8 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
+import java.io.UncheckedIOException
 import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
 import java.time.Instant
@@ -20,13 +22,15 @@ import javax.enterprise.context.ApplicationScoped
 class MigrationService {
 
     fun run(
-        migrationFolder: File,
+        migrationDirectory: File,
         host: String,
         port: Int,
         localDatacenter: String,
         graphName: String
     ) {
-        println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName, Migration folder $migrationFolder")
+        validateMigrationDirectory(migrationDirectory)
+
+        println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName, Migration directory $migrationDirectory")
 
         println("Connecting to $host:$port")
         val session = CqlSession.builder()
@@ -40,7 +44,7 @@ class MigrationService {
 
         createVertexMigration(session, graphName)
 
-        val migrationFiles = getMigrationFiles(migrationFolder)
+        val migrationFiles = getMigrationFiles(migrationDirectory)
 
         println("Found ${migrationFiles.size} migration files")
 
@@ -53,10 +57,8 @@ class MigrationService {
 
             var migrationStatement = try {
                 IOUtils.toString(FileInputStream(file), StandardCharsets.UTF_8)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                System.exit(1)
-                return
+            } catch (e: IOException) {
+                throw UncheckedIOException("Failed to read migration file $filename", e)
             }
 
             val md5Hex = DigestUtils.md5Hex(migrationStatement)
@@ -90,6 +92,16 @@ class MigrationService {
         }
     }
 
+    fun validateMigrationDirectory(migrationDirectory: File) {
+        if (!migrationDirectory.exists()) {
+            throw IllegalArgumentException("Migration directory $migrationDirectory does not exist")
+        }
+
+        if (!migrationDirectory.isDirectory) {
+            throw IllegalArgumentException("Migration directory $migrationDirectory is not a directory")
+        }
+    }
+
     fun ensureSystemGraph(session: CqlSession, graphName: String) {
         session.execute(
             ScriptGraphStatement
@@ -119,8 +131,8 @@ class MigrationService {
         )
     }
 
-    fun getMigrationFiles(folder: File): List<File> {
-        return folder.listFiles({ file -> file.name.endsWith(".groovy") })
+    fun getMigrationFiles(directory: File): List<File> {
+        return directory.listFiles({ file -> file.name.endsWith(".groovy") })
             .sortedBy { file -> file.name }
             .toList()
     }
