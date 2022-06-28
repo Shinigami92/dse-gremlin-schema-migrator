@@ -27,6 +27,6 @@ class MigrationCommand : Runnable {
     @Inject @field:Default lateinit var service: MigrationService
 
     override fun run(): Unit {
-        service.runMigration(host!!, port!!, localDatacenter!!, graphName!!)
+        service.run(host!!, port!!, localDatacenter!!, graphName!!)
     }
 }
