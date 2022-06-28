@@ -28,11 +28,10 @@ class MigrationService {
         println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName")
 
         println("Connecting to $host:$port")
-        val session =
-            CqlSession.builder()
-                .addContactPoint(InetSocketAddress(host, port))
-                .withLocalDatacenter(localDatacenter)
-                .build()
+        val session = CqlSession.builder()
+            .addContactPoint(InetSocketAddress(host, port))
+            .withLocalDatacenter(localDatacenter)
+            .build()
 
         println("Connected to $host:$port")
 
@@ -64,11 +63,7 @@ class MigrationService {
             val md5Hex = DigestUtils.md5Hex(migrationStatement)
             // println("md5Hex: $md5Hex");
 
-            val md5HexFromDB = getMd5HexFromDB(
-                session,
-                graphName,
-                step
-            )
+            val md5HexFromDB = getMd5HexFromDB(session, graphName, step)
 
             if (md5HexFromDB.isNullOrEmpty()) {
                 println("Compare md5: file:$md5Hex, db:$md5HexFromDB")
@@ -121,8 +116,7 @@ class MigrationService {
                     ".property('md5hex', Text)" +
                     ".property('executedAt', Timestamp)" +
                     ".create();"
-            )
-                .setGraphName(graphName)
+            ).setGraphName(graphName)
         )
     }
 
@@ -139,14 +133,12 @@ class MigrationService {
         md5Hex: String
     ): GraphResultSet {
         return session.execute(
-            FluentGraphStatement
-                .newInstance(
-                    g.addV("migration")
-                        .property("step", step)
-                        .property("md5hex", md5Hex)
-                        .property("executedAt", Instant.now())
-                )
-                .setGraphName(graphName)
+            FluentGraphStatement.newInstance(
+                g.addV("migration")
+                    .property("step", step)
+                    .property("md5hex", md5Hex)
+                    .property("executedAt", Instant.now())
+            ).setGraphName(graphName)
         )
     }
 
