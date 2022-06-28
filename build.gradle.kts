@@ -27,6 +27,7 @@ dependencies {
     implementation("commons-io:commons-io:2.11.0")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("org.testcontainers:testcontainers:1.17.2")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
 }
 
 group = "com.github.shinigami92"

@@ -1,10 +1,11 @@
 package com.github.shinigami92
 
+import assertk.assertThat
+import assertk.assertions.contains
 import io.quarkus.test.junit.main.LaunchResult
 import io.quarkus.test.junit.main.QuarkusMainLauncher
 import io.quarkus.test.junit.main.QuarkusMainTest
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.GenericContainer
@@ -12,7 +13,7 @@ import org.testcontainers.utility.DockerImageName
 import java.time.Duration
 
 @QuarkusMainTest
-open class MigrationCommandTest {
+class MigrationCommandTest {
     companion object {
         lateinit var container: GenericContainer<*>
 
@@ -57,18 +58,18 @@ open class MigrationCommandTest {
         val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph"
         val message2 = "No migration folder specified"
         val output = result.output
-        Assertions.assertTrue(output.contains(message1))
-        Assertions.assertTrue(output.contains(message2))
+        assertThat(output).contains(message1)
+        assertThat(output).contains(message2)
     }
 
     @Test
     fun testProvideMigrationFolder(launcher: QuarkusMainLauncher) {
         val result: LaunchResult = launcher.launch(host, port, "dc1", "my_graph", "src/test/resources/migrations")
 
-        val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph"
+        val message1 = "Host $host, Port $port, DC dc1, Graph name my_graph, Migration folder src/test/resources/migrations"
         val message2 = "Found 2 migration files"
         val output = result.output
-        Assertions.assertTrue(output.contains(message1))
-        Assertions.assertTrue(output.contains(message2))
+        assertThat(output).contains(message1)
+        assertThat(output).contains(message2)
     }
 }
