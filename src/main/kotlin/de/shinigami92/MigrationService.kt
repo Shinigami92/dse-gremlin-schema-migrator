@@ -1,4 +1,4 @@
-package de.shinigami92
+package com.github.shinigami92
 
 import com.datastax.dse.driver.api.core.graph.ScriptGraphStatement
 import com.datastax.oss.driver.api.core.CqlSession
@@ -8,7 +8,7 @@ import javax.enterprise.context.ApplicationScoped
 @ApplicationScoped
 class MigrationService {
 
-    fun runMigration(
+    fun run(
             host: String,
             port: Int,
             localDatacenter: String,
@@ -27,6 +27,14 @@ class MigrationService {
 
         ensureSystemGraph(session, graphName)
     }
+
+    // loadMigrations
+    // lock
+    // unlock
+    // getRunMigrations
+    // getMigrationsToRun
+    // checkOrder
+    // runMigrations
 
     fun ensureSystemGraph(session: CqlSession, graphName: String): Unit {
         session.execute(

@@ -1,4 +1,4 @@
-package de.shinigami92
+package com.github.shinigami92
 
 import javax.enterprise.inject.Default
 import javax.inject.Inject

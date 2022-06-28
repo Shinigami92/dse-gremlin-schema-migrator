@@ -1,4 +1,4 @@
-package de.shinigami92
+package com.github.shinigami92
 
 import io.quarkus.test.junit.main.LaunchResult
 import io.quarkus.test.junit.main.QuarkusMainLauncher

@@ -26,7 +26,7 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:1.17.2")
 }
 
-group = "de.shinigami92"
+group = "com.github.shinigami92"
 version = "1.0.0-SNAPSHOT"
 
 java {
