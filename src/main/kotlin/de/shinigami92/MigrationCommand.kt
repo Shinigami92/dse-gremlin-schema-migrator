@@ -1,9 +1,9 @@
 package com.github.shinigami92
 
-import javax.enterprise.inject.Default
-import javax.inject.Inject
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
+import javax.enterprise.inject.Default
+import javax.inject.Inject
 
 @Command(name = "migration", mixinStandardHelpOptions = true)
 class MigrationCommand : Runnable {
@@ -18,15 +18,15 @@ class MigrationCommand : Runnable {
     var localDatacenter: String? = null
 
     @Parameters(
-            paramLabel = "<graph-name>",
-            defaultValue = "my_graph",
-            description = ["Graph name"]
+        paramLabel = "<graph-name>",
+        defaultValue = "my_graph",
+        description = ["Graph name"]
     )
     var graphName: String? = null
 
     @Inject @field:Default lateinit var service: MigrationService
 
-    override fun run(): Unit {
+    override fun run() {
         service.run(host!!, port!!, localDatacenter!!, graphName!!)
     }
 }

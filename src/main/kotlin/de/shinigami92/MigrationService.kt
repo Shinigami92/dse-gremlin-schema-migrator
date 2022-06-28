@@ -9,19 +9,19 @@ import javax.enterprise.context.ApplicationScoped
 class MigrationService {
 
     fun run(
-            host: String,
-            port: Int,
-            localDatacenter: String,
-            graphName: String,
-    ): Unit {
+        host: String,
+        port: Int,
+        localDatacenter: String,
+        graphName: String,
+    ) {
         println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName")
 
         println("Connecting to $host:$port")
         val session =
-                CqlSession.builder()
-                        .addContactPoint(InetSocketAddress(host, port))
-                        .withLocalDatacenter(localDatacenter)
-                        .build()
+            CqlSession.builder()
+                .addContactPoint(InetSocketAddress(host, port))
+                .withLocalDatacenter(localDatacenter)
+                .build()
 
         println("Connected to $host:$port")
 
@@ -36,12 +36,12 @@ class MigrationService {
     // checkOrder
     // runMigrations
 
-    fun ensureSystemGraph(session: CqlSession, graphName: String): Unit {
+    fun ensureSystemGraph(session: CqlSession, graphName: String) {
         session.execute(
-                ScriptGraphStatement.builder("system.graph(graphName).ifNotExists().create()")
-                        .setQueryParam("graphName", graphName)
-                        .setSystemQuery(true)
-                        .build()
+            ScriptGraphStatement.builder("system.graph(graphName).ifNotExists().create()")
+                .setQueryParam("graphName", graphName)
+                .setSystemQuery(true)
+                .build()
         )
 
         println("Graph $graphName created")

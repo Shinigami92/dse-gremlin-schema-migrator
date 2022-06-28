@@ -10,4 +10,4 @@ pluginManagement {
         id(quarkusPluginId) version quarkusPluginVersion
     }
 }
-rootProject.name="dse-gremlin-schema-migrator"
+rootProject.name = "dse-gremlin-schema-migrator"

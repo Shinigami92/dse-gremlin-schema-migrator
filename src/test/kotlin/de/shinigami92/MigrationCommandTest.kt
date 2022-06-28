@@ -3,13 +3,13 @@ package com.github.shinigami92
 import io.quarkus.test.junit.main.LaunchResult
 import io.quarkus.test.junit.main.QuarkusMainLauncher
 import io.quarkus.test.junit.main.QuarkusMainTest
-import java.time.Duration
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
+import java.time.Duration
 
 @QuarkusMainTest
 open class MigrationCommandTest {
@@ -25,11 +25,11 @@ open class MigrationCommandTest {
             println("Starting DSE test resource")
 
             container =
-                    GenericContainer(DockerImageName.parse("datastax/dse-server:6.8.24"))
-                            .withCommand("-s -g")
-                            .withStartupTimeout(Duration.ofMinutes(5))
-                            .withEnv("DS_LICENSE", "accept")
-                            .withExposedPorts(9042)
+                GenericContainer(DockerImageName.parse("datastax/dse-server:6.8.24"))
+                    .withCommand("-s -g")
+                    .withStartupTimeout(Duration.ofMinutes(5))
+                    .withEnv("DS_LICENSE", "accept")
+                    .withExposedPorts(9042)
 
             println("Starting DSE container")
 
