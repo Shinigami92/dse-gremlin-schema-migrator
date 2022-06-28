@@ -26,6 +26,7 @@ class MigrationCommand : Runnable {
 
     @Parameters(
         paramLabel = "<migration-folder>",
+        defaultValue = "",
         description = ["Migration folder"]
     )
     var migrationFolder: String? = null
