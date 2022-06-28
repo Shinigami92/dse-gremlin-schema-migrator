@@ -71,7 +71,7 @@ class MigrationService {
 
             val md5HexFromDB = getMd5HexFromDB(session, graphName, step)
 
-            if (md5HexFromDB.isNullOrEmpty()) {
+            if (md5HexFromDB != null) {
                 println("Compare md5: file:$md5Hex, db:$md5HexFromDB")
                 if (md5Hex == md5HexFromDB) {
                     println("Skipping $filename: already executed")
