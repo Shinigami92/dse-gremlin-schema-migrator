@@ -23,6 +23,8 @@ dependencies {
     implementation("com.datastax.oss.quarkus:cassandra-quarkus-client:1.1.2")
     implementation("org.apache.tinkerpop:tinkergraph-gremlin:3.6.0")
     implementation("org.apache.tinkerpop:gremlin-driver:3.6.0")
+    implementation("commons-codec:commons-codec:1.15")
+    implementation("commons-io:commons-io:2.11.0")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("org.testcontainers:testcontainers:1.17.2")
 }
