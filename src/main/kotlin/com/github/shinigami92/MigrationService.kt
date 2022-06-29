@@ -91,6 +91,8 @@ class MigrationService {
 
             println("--- Migration $filename executed successfully ---")
         }
+
+        session.close()
     }
 
     private fun generateChecksum(migrationStatement: String): String {

@@ -2,6 +2,7 @@ package com.github.shinigami92
 
 import assertk.assertThat
 import assertk.assertions.contains
+import com.datastax.oss.driver.api.core.CqlSession
 import io.quarkus.test.junit.main.LaunchResult
 import io.quarkus.test.junit.main.QuarkusMainLauncher
 import io.quarkus.test.junit.main.QuarkusMainTest
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.OS.MAC
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
+import java.net.InetSocketAddress
 import java.time.Duration
 
 @QuarkusMainTest
@@ -20,8 +22,10 @@ class MigrationCommandTest {
     companion object {
         lateinit var container: GenericContainer<*>
 
-        var host: String? = null
-        var port: String? = null
+        lateinit var host: String
+        var port: Int = 0
+
+        lateinit var session: CqlSession
 
         @BeforeAll
         @JvmStatic
@@ -40,15 +44,22 @@ class MigrationCommandTest {
             container.start()
 
             host = container.host
-            port = container.getMappedPort(9042).toString()
+            port = container.getMappedPort(9042)
 
             println("DSE container started on $host:$port")
+
+            session = CqlSession.builder()
+                .addContactPoint(InetSocketAddress(host, port))
+                .withLocalDatacenter("dc1")
+                .build()
         }
 
         @AfterAll
         @JvmStatic
         internal fun afterAll() {
             println("Stopping DSE container")
+
+            session.close()
 
             container.stop()
         }
