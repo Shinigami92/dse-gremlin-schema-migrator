@@ -5,7 +5,6 @@ import com.datastax.dse.driver.api.core.graph.FluentGraphStatement
 import com.datastax.dse.driver.api.core.graph.GraphResultSet
 import com.datastax.dse.driver.api.core.graph.ScriptGraphStatement
 import com.datastax.oss.driver.api.core.CqlSession
-import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.IOUtils
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal
 import org.apache.tinkerpop.gremlin.structure.Vertex
@@ -13,8 +12,10 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.UncheckedIOException
+import java.math.BigInteger
 import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.time.Instant
 import javax.enterprise.context.ApplicationScoped
 
@@ -61,7 +62,7 @@ class MigrationService {
                 throw UncheckedIOException("Failed to read migration file $filename", e)
             }
 
-            val checksum = DigestUtils.md5Hex(migrationStatement)
+            val checksum = generateChecksum(migrationStatement)
             // println("checksum: $checksum");
 
             val checksumFromDB = getChecksumFromDB(session, graphName, step)
@@ -90,6 +91,13 @@ class MigrationService {
 
             println("--- Migration $filename executed successfully ---")
         }
+    }
+
+    private fun generateChecksum(migrationStatement: String): String {
+        val md = MessageDigest.getInstance("MD5")
+        md.update(migrationStatement.toByteArray())
+        val digest = md.digest()
+        return String.format("%032x", BigInteger(1, digest))
     }
 
     private fun validateMigrationDirectory(migrationDirectory: File) {
