@@ -30,6 +30,8 @@ class MigrationService {
         graphName: String
     ) {
         validateMigrationDirectory(migrationDirectory)
+        validatePort(port)
+        validateGraphName(graphName)
 
         println("Host $host, Port $port, DC $localDatacenter, Graph name $graphName, Migration directory $migrationDirectory")
 
@@ -109,6 +111,18 @@ class MigrationService {
 
         if (!migrationDirectory.isDirectory) {
             throw IllegalArgumentException("Migration directory $migrationDirectory is not a directory")
+        }
+    }
+
+    private fun validatePort(port: Int) {
+        if (port < 0 || port > 65535) {
+            throw IllegalArgumentException("Invalid port $port, must be between 0 and 65535")
+        }
+    }
+
+    private fun validateGraphName(graphName: String) {
+        if (!Regex("^[a-zA-Z0-9]\\w*$").matches(graphName)) {
+            throw IllegalArgumentException("Graph name must begin with an alpha-numeric character and can only contain alpha-numeric characters and underscores")
         }
     }
 

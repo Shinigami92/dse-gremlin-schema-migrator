@@ -75,4 +75,28 @@ Migrate schema for specified database
         assertThat(result.exitCode()).isEqualTo(1)
         assertThat(result.errorOutput).contains("Could not reach any contact point, make sure you've provided valid addresses")
     }
+
+    @Test
+    fun `migration -P=-1`(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("src/test/resources/migrations", "-P=-1")
+
+        assertThat(result.exitCode()).isEqualTo(1)
+        assertThat(result.errorOutput).contains("Invalid port -1, must be between 0 and 65535")
+    }
+
+    @Test
+    fun `migration --port=70000`(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("src/test/resources/migrations", "--port=70000")
+
+        assertThat(result.exitCode()).isEqualTo(1)
+        assertThat(result.errorOutput).contains("Invalid port 70000, must be between 0 and 65535")
+    }
+
+    @Test
+    fun `migration -G=my-graph`(launcher: QuarkusMainLauncher) {
+        val result: LaunchResult = launcher.launch("src/test/resources/migrations", "-G=my-graph")
+
+        assertThat(result.exitCode()).isEqualTo(1)
+        assertThat(result.errorOutput).contains("Graph name must begin with an alpha-numeric character and can only contain alpha-numeric characters and underscores")
+    }
 }
