@@ -49,8 +49,8 @@ class MigrationService {
         println("Found ${migrationFiles.size} migration files")
 
         for (i in migrationFiles.indices) {
-            val file = migrationFiles.get(i)
-            val filename = file.getName()
+            val file = migrationFiles[i]
+            val filename = file.name
             val step = i + 1
 
             println("--- Migration $filename ---")
@@ -92,7 +92,7 @@ class MigrationService {
         }
     }
 
-    fun validateMigrationDirectory(migrationDirectory: File) {
+    private fun validateMigrationDirectory(migrationDirectory: File) {
         if (!migrationDirectory.exists()) {
             throw IllegalArgumentException("Migration directory $migrationDirectory does not exist")
         }
@@ -102,7 +102,7 @@ class MigrationService {
         }
     }
 
-    fun ensureSystemGraph(session: CqlSession, graphName: String) {
+    private fun ensureSystemGraph(session: CqlSession, graphName: String) {
         session.execute(
             ScriptGraphStatement
                 .builder("system.graph(graphName).ifNotExists().create()")
@@ -114,7 +114,7 @@ class MigrationService {
         println("Graph $graphName created")
     }
 
-    fun createVertexMigration(
+    private fun createVertexMigration(
         session: CqlSession,
         graphName: String
     ): GraphResultSet {
@@ -131,13 +131,13 @@ class MigrationService {
         )
     }
 
-    fun getMigrationFiles(directory: File): List<File> {
+    private fun getMigrationFiles(directory: File): List<File> {
         return directory.listFiles({ file -> file.name.endsWith(".groovy") })
             .sortedBy { file -> file.name }
             .toList()
     }
 
-    fun addMigrationVertex(
+    private fun addMigrationVertex(
         session: CqlSession,
         graphName: String,
         step: Int,
@@ -153,7 +153,7 @@ class MigrationService {
         )
     }
 
-    fun getMd5HexFromDB(
+    private fun getMd5HexFromDB(
         session: CqlSession,
         graphName: String,
         step: Int
