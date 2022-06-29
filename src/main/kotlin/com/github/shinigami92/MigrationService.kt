@@ -61,19 +61,19 @@ class MigrationService {
                 throw UncheckedIOException("Failed to read migration file $filename", e)
             }
 
-            val md5Hex = DigestUtils.md5Hex(migrationStatement)
-            // println("md5Hex: $md5Hex");
+            val checksum = DigestUtils.md5Hex(migrationStatement)
+            // println("checksum: $checksum");
 
-            val md5HexFromDB = getMd5HexFromDB(session, graphName, step)
+            val checksumFromDB = getChecksumFromDB(session, graphName, step)
 
-            if (md5HexFromDB != null) {
-                println("Compare md5: file:$md5Hex, db:$md5HexFromDB")
-                if (md5Hex == md5HexFromDB) {
+            if (checksumFromDB != null) {
+                println("Compare checksum: file:$checksum, db:$checksumFromDB")
+                if (checksum == checksumFromDB) {
                     println("Skipping $filename: already executed")
                     println("--- Migration $filename skipped successfully ---")
                     continue
                 } else {
-                    println("$filename, md5Hex differs. Aborting migration.")
+                    println("$filename, checksum differs. Aborting migration.")
                     break
                 }
             } else {
@@ -85,7 +85,7 @@ class MigrationService {
                 )
 
                 println("Insert migration vertex $filename")
-                addMigrationVertex(session, graphName, step, md5Hex)
+                addMigrationVertex(session, graphName, step, checksum)
             }
 
             println("--- Migration $filename executed successfully ---")
@@ -124,7 +124,7 @@ class MigrationService {
                     ".vertexLabel('migration')" +
                     ".ifNotExists()" +
                     ".partitionBy('step', Int)" +
-                    ".property('md5hex', Text)" +
+                    ".property('checksum', Text)" +
                     ".property('executedAt', Timestamp)" +
                     ".create();"
             ).setGraphName(graphName)
@@ -141,26 +141,26 @@ class MigrationService {
         session: CqlSession,
         graphName: String,
         step: Int,
-        md5Hex: String
+        checksum: String
     ): GraphResultSet {
         return session.execute(
             FluentGraphStatement.newInstance(
                 g.addV("migration")
                     .property("step", step)
-                    .property("md5hex", md5Hex)
+                    .property("checksum", checksum)
                     .property("executedAt", Instant.now())
             ).setGraphName(graphName)
         )
     }
 
-    private fun getMd5HexFromDB(
+    private fun getChecksumFromDB(
         session: CqlSession,
         graphName: String,
         step: Int
     ): String? {
         val traversal: GraphTraversal<Vertex, String> = g.V()
             .has("migration", "step", step)
-            .values("md5Hex")
+            .values("checksum")
         val result = session.execute(
             FluentGraphStatement.newInstance(traversal).setGraphName(graphName)
         )
