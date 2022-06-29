@@ -2,6 +2,9 @@ package com.github.shinigami92
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.isEqualTo
+import com.datastax.dse.driver.api.core.graph.DseGraph.g
+import com.datastax.dse.driver.api.core.graph.FluentGraphStatement
 import com.datastax.oss.driver.api.core.CqlSession
 import io.quarkus.test.junit.main.LaunchResult
 import io.quarkus.test.junit.main.QuarkusMainLauncher
@@ -78,5 +81,21 @@ class MigrationCommandTest {
 
         assertThat(result.output).contains("Host $host, Port $port, DC dc1, Graph name my_graph, Migration directory src/test/resources/migrations")
         assertThat(result.output).contains("Found 2 migration files")
+
+        val graphResult = session.execute(FluentGraphStatement.newInstance(g.V().hasLabel("migration").count()).setGraphName("my_graph"))
+        assertThat(graphResult.one()?.asLong()).isEqualTo(2L)
+    }
+
+    @Test
+    fun testProvideAlternativeGraph(launcher: QuarkusMainLauncher) {
+        val graphName = "alternative_graph"
+
+        val result: LaunchResult = launcher.launch("--host=$host", "--port=$port", "-D=dc1", "-G=$graphName", "src/test/resources/migrations")
+
+        assertThat(result.output).contains("Host $host, Port $port, DC dc1, Graph name $graphName, Migration directory src/test/resources/migrations")
+        assertThat(result.output).contains("Found 2 migration files")
+
+        val graphResult = session.execute(FluentGraphStatement.newInstance(g.V().hasLabel("migration").count()).setGraphName(graphName))
+        assertThat(graphResult.one()?.asLong()).isEqualTo(2L)
     }
 }
